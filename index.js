@@ -9,7 +9,6 @@ const itemID = document.querySelector('.filters input[type="radio"]:checked');
 const clear = document.querySelector('.clear');
 const mobClear = document.querySelector('.mob-clear');
 
-// Load items from localStorage when the page loads
 document.addEventListener('DOMContentLoaded', () => {
     restoreFromLocalStorage();
     itemCount.innerText = document.querySelectorAll('.list:not(.hidden)').length;
