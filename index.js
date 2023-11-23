@@ -1,6 +1,5 @@
 const itemCount = document.querySelector('.count span');
 const mobCount = document.querySelector('.mob-count span');
-const number = document.getElementById('number');
 const todo = document.querySelector('.todos ul');
 const themeIcon = document.querySelector('.theme');
 const addButton = document.querySelector('.todo-input button');
@@ -11,29 +10,24 @@ const mobClear = document.querySelector('.mob-clear');
 
 document.addEventListener('DOMContentLoaded', () => {
     restoreFromLocalStorage();
-    itemCount.innerText = document.querySelectorAll('.list:not(.hidden)').length;
-    mobCount.innerText = document.querySelectorAll('.list:not(.hidden)').length;
+    updateItemCount();
 });
 
 themeIcon.addEventListener('click', () => {
     document.body.classList.toggle('light');
-    if (document.body.classList.contains('light')) {
-        themeIcon.src = 'images/icon-moon.svg';
-    } else {
-        themeIcon.src = 'images/icon-sun.svg';
-    }
+    themeIcon.src = document.body.classList.contains('light') ? 'images/icon-moon.svg' : 'images/icon-sun.svg';
 });
 
 addButton.addEventListener('click', () => {
-    if (itemInput.value.length > 0) {
-        addItems(itemInput.value);
+    if (itemInput.value.trim() !== '') {
+        addItems(itemInput.value.trim());
         itemInput.value = '';
     }
 });
 
 itemInput.addEventListener('keypress', (event) => {
-    if (event.charCode === 13 && itemInput.value.length > 0) {
-        addItems(itemInput.value);
+    if (event.charCode === 13 && itemInput.value.trim() !== '') {
+        addItems(itemInput.value.trim());
         itemInput.value = '';
     }
 });
@@ -58,6 +52,7 @@ function addItems(text) {
 function updateCount(num) {
     itemCount.innerText = +itemCount.innerText + num;
     mobCount.innerText = +mobCount.innerText + num;
+    updateItemCount();
 }
 
 function removeItems(item) {
@@ -68,7 +63,7 @@ function removeItems(item) {
 
 todo.addEventListener('click', (event) => {
     if (event.target.classList.contains('remove')) {
-        removeItems(event.target.parentElement);
+        removeItems(event.target.parentElement.closest('li'));
     } else if (event.target.classList.contains('checkbox')) {
         updateCount(event.target.checked ? -1 : 1);
         saveToLocalStorage();
@@ -109,8 +104,7 @@ function filterTodo(id) {
             });
             break;
     }
-    itemCount.innerText = document.querySelectorAll('.list:not(.hidden)').length;
-    mobCount.innerText = document.querySelectorAll('.list:not(.hidden)').length;
+    updateItemCount();
 }
 
 clear.addEventListener('click', () => {
@@ -149,4 +143,10 @@ function restoreFromLocalStorage() {
             }
         });
     }
+}
+
+function updateItemCount() {
+    const visibleItems = document.querySelectorAll('.list:not(.hidden)');
+    itemCount.innerText = visibleItems.length;
+    mobCount.innerText = visibleItems.length;
 }
